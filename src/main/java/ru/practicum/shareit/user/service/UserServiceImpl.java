@@ -67,7 +67,8 @@ public class UserServiceImpl implements UserService {
 
     public void checkEmail(User user, Long id) {
         for (User user1 : getAll()) {
-            if ((user1.getEmail().equals(user.getEmail())) && (user1.getId() != id)) {
+            if ((user1.getEmail().equals(user.getEmail()))
+                    && (user1.getId() != id)) {
                 throw new EmailException("EmailException (Пользователь с таким email уже существует!)");
             }
         }
