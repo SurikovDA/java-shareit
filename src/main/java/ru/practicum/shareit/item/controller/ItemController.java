@@ -23,21 +23,21 @@ public class ItemController {
 
     //Получение всех вещей по id пользователя
     @GetMapping
-    public List<Item> getAll(@RequestHeader("X-Sharer-User-id") long userId) {
+    public List<ItemDto> getAll(@RequestHeader("X-Sharer-User-id") long userId) {
         log.info("Получен запрос GET /items");
         return itemService.readAllByUserId(userId);
     }
 
     //Получение вещи по id
     @GetMapping("/{id}")
-    public Item get(@RequestHeader("X-Sharer-User-id") Long userId, @Valid @PathVariable Long id) {
+    public ItemDto get(@RequestHeader("X-Sharer-User-id") Long userId, @Valid @PathVariable Long id) {
         log.info("Получен запрос GET /items/{}", id);
         return itemService.getItemById(id);
     }
 
     //Создание вещи
     @PostMapping
-    public Item create(@RequestHeader("X-Sharer-User-id") long userId, @Valid @RequestBody ItemDto itemDto) {
+    public ItemDto create(@RequestHeader("X-Sharer-User-id") long userId, @Valid @RequestBody ItemDto itemDto) {
         log.info("Получен запрос POST /items");
         Item item = ItemMapper.toItem(itemDto);
         return itemService.create(item, userId);
@@ -45,8 +45,8 @@ public class ItemController {
 
     //Редактирование вещи
     @PatchMapping("/{id}")
-    public Item update(@RequestHeader("X-Sharer-User-id") long userId, @Valid @PathVariable Long id,
-                       @RequestBody ItemDto itemDto) {
+    public ItemDto update(@RequestHeader("X-Sharer-User-id") long userId, @Valid @PathVariable Long id,
+                          @RequestBody ItemDto itemDto) {
         log.info("Получен запрос PUT /items");
         Item item = ItemMapper.toItem(itemDto);
         return itemService.update(id, item, userId);
@@ -61,7 +61,7 @@ public class ItemController {
 
     //Поиск вещей
     @GetMapping("/search")
-    private List<Item> searching(@RequestParam String text) {
+    private List<ItemDto> searching(@RequestParam String text) {
         return itemService.findItemsByText(text);
     }
 }

@@ -4,12 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exeptions.EntityNotFoundException;
-import ru.practicum.shareit.exeptions.ValidationException;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -19,54 +23,53 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
 
     @Override
-    public Item create(Item item, Long userId) {
-        validate(item, userId);
-        if (itemRepository.getItemById(item.getId()) != null) {
-            throw new ValidationException("Предмет с таким id уже есть в базе");
-        }
+    public ItemDto create(Item item, Long userId) {
         Item createItem = itemRepository.create(item, userRepository.getUserById(userId));
         log.info("Предмет с id = '{}' добавлен в список", createItem.getId());
-        return createItem;
+        return ItemMapper.toItemDto(createItem);
     }
 
     @Override
-    public List<Item> readAll() {
-        return itemRepository.readAll();
+    public List<ItemDto> readAll() {
+        List<Item> itemsList = itemRepository.readAll();
+        List<ItemDto> itemDtoList = new ArrayList<>();
+        for (Item item : itemsList) {
+            itemDtoList.add(ItemMapper.toItemDto(item));
+        }
+        return itemDtoList;
     }
 
     @Override
-    public List<Item> readAllByUserId(Long id) {
-        return itemRepository.readAllByUserId(id);
+    public List<ItemDto> readAllByUserId(Long id) {
+        List<Item> itemsList = itemRepository.readAllByUserId(id);
+        List<ItemDto> itemDtoList = new ArrayList<>();
+        for (Item item : itemsList) {
+            itemDtoList.add(ItemMapper.toItemDto(item));
+        }
+        return itemDtoList;
     }
 
     @Override
-    public Item update(Long id, Item item, Long userId) {
-        if (itemRepository.getItemById(id).getOwner() != userRepository.getUserById(userId)) {
+    public ItemDto update(Long id, Item item, Long userId) {
+        User user = userRepository.getUserById(userId);
+        Item item1 = itemRepository.getItemById(id);
+        if (!Objects.equals(item1.getOwner().getId(), user.getId())) {
             throw new EntityNotFoundException("EntityNotFoundException (Предмет не может быть обновлен, т.к. он " +
                     "не принадлежит данному пользователь)");
         }
-        if (itemRepository.getItemById(id) != null) {
-            Item updateItem = itemRepository.update(id, item, userRepository.getUserById(userId));
-            log.info("Предмет с id = '{}' обновлен", updateItem.getId());
-            return updateItem;
-        } else {
-            log.info("EntityNotFoundException (Предмет не может быть обновлен, т.к. его нет в списке)");
-            throw new EntityNotFoundException("Такого предмета не существует");
-        }
+        Item updateItem = itemRepository.update(item1.getId(), item, user);
+        log.info("Предмет с id = '{}' обновлен", updateItem.getId());
+        return ItemMapper.toItemDto(updateItem);
     }
 
     @Override
-    public Item getItemById(Long id) {
-        if (itemRepository.getItemById(id) != null) {
-            return itemRepository.getItemById(id);
-        } else {
-            throw new EntityNotFoundException(String.format("Предмет с id=%d отсутствует в списке", id));
-        }
+    public ItemDto getItemById(Long id) {
+        Item item = itemRepository.getItemById(id);
+        return ItemMapper.toItemDto(item);
     }
 
     @Override
     public void delete(Long id, Long userId) {
-        validate(getItemById(id), userId);
         if (itemRepository.getItemById(id) != null) {
             itemRepository.delete(id);
         } else {
@@ -75,18 +78,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> findItemsByText(String text) {
-        return itemRepository.findItemsByText(text);
-    }
-
-    private void validate(Item item, Long userId) {
-        if (userRepository.getUserById(userId) == null) {
-            log.info("EntityNotFoundException (Пользователь с id = {} отсутствует в списке)", userId);
-            throw new EntityNotFoundException("Пользователя не существует");
+    public List<ItemDto> findItemsByText(String text) {
+        List<Item> itemsList = itemRepository.findItemsByText(text);
+        List<ItemDto> itemDtoList = new ArrayList<>();
+        for (Item item : itemsList) {
+            itemDtoList.add(ItemMapper.toItemDto(item));
         }
-        if (item.getAvailable() == null) {
-            log.info("ValidationException (Ошибка статуса предмета с id = {})", item.getId());
-            throw new IllegalArgumentException("Статус предмета отсутствует");
-        }
+        return itemDtoList;
     }
 }

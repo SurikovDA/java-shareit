@@ -1,6 +1,8 @@
 package ru.practicum.shareit.user.storage;
 
 import org.springframework.stereotype.Component;
+import ru.practicum.shareit.exeptions.EmailException;
+import ru.practicum.shareit.exeptions.EntityNotFoundException;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.ArrayList;
@@ -23,6 +25,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User create(User user) {
+        checkEmail(user, user.getId());
         user.setId(generateId());
         users.put(user.getId(), user);
         return users.get(user.getId());
@@ -35,6 +38,8 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User update(Long id, User user) {
+        checkUser(id);
+        checkEmail(user, id);
         if (user.getName() != null) {
             users.get(id).setName(user.getName());
         }
@@ -46,11 +51,27 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User getUserById(Long id) {
+        checkUser(id);
         return users.get(id);
     }
 
     @Override
     public void delete(Long id) {
         users.remove(id);
+    }
+
+    private void checkUser(Long userId) {
+        if (!users.containsKey(userId)) {
+            throw new EntityNotFoundException("Такого пользователя не существует!");
+        }
+    }
+
+    private void checkEmail(User user, Long id) {
+        for (User user1 : users.values()) {
+            if ((user1.getEmail().equals(user.getEmail()))
+                    && (!user1.getId().equals(id))) {
+                throw new EmailException("EmailException (Пользователь с таким email уже существует!)");
+            }
+        }
     }
 }

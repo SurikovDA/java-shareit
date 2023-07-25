@@ -1,6 +1,8 @@
 package ru.practicum.shareit.item.storage;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.practicum.shareit.exeptions.EntityNotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -8,8 +10,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
+@Slf4j
 public class ItemRepositoryImpl implements ItemRepository {
     private final Map<Long, Item> items;
     private static long itemId;
@@ -48,6 +52,7 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public Item update(Long id, Item item, User user) {
+        checkItem(id);
         if (item.getName() != null) {
             items.get(id).setName(item.getName());
         }
@@ -65,25 +70,31 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public Item getItemById(Long id) {
+        checkItem(id);
         return items.get(id);
     }
 
     @Override
     public void delete(Long id) {
+        checkItem(id);
         items.remove(id);
     }
 
     @Override
     public List<Item> findItemsByText(String text) {
-        List<Item> itemList = new ArrayList<>();
-        for (Item item : readAll()) {
-            String name = item.getName().toLowerCase();
-            String description = item.getDescription().toLowerCase();
-            if ((name.contains(text.toLowerCase()) || description.contains(text.toLowerCase()))
-                    && item.getAvailable() && !text.isBlank()) {
-                itemList.add(item);
-            }
+        if (text.isBlank()) {
+            return new ArrayList<>();
         }
-        return itemList;
+        return readAll().stream().filter(item -> ((
+                item.getName().toLowerCase().contains(text.toLowerCase())
+                        || item.getDescription().toLowerCase().contains(text.toLowerCase()))
+                && item.getAvailable())).collect(Collectors.toList());
+    }
+
+    private void checkItem(Long itemId) {
+        if (!items.containsKey(itemId)) {
+            log.warn("item с id = {}, не найден!", itemId);
+            throw new EntityNotFoundException("Предмет отсутствует в списке!");
+        }
     }
 }

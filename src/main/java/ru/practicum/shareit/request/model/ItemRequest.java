@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.user.model.User;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 
 /**
@@ -18,8 +16,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder(toBuilder = true)
 public class ItemRequest {
-    @NotNull(message = "id не может быть пустым!")
-    @Positive(message = "id не может быть отрицательным!")
     private Long id;
     private String description;
     private User requestor;
