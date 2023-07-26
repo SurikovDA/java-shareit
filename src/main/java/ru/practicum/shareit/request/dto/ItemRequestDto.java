@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.user.model.User;
 
-import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 
 /**
@@ -17,7 +16,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder(toBuilder = true)
 public class ItemRequestDto {
-    @Positive(message = "id не может быть отрицательным!")
     private Long id;
     private String description;
     private User requestor;

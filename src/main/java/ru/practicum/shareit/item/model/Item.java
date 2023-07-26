@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 
@@ -21,5 +21,5 @@ public class Item {
     private String description;
     private Boolean available;
     private User owner;
-    private ItemRequestDto request;
+    private ItemRequest request;
 }

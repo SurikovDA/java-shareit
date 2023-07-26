@@ -4,7 +4,10 @@ import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 
 public class RequestMapper {
-    public ItemRequest toRequest(ItemRequestDto itemRequestDto) {
+    public static ItemRequest toRequest(ItemRequestDto itemRequestDto) {
+        if (itemRequestDto == null) {
+            return null;
+        }
         return ItemRequest.builder()
                 .id(itemRequestDto.getId())
                 .description(itemRequestDto.getDescription())
@@ -13,7 +16,10 @@ public class RequestMapper {
                 .build();
     }
 
-    public ItemRequestDto toRequestDto(ItemRequest itemRequest) {
+    public static ItemRequestDto toRequestDto(ItemRequest itemRequest) {
+        if (itemRequest == null) {
+            return null;
+        }
         return ItemRequestDto.builder()
                 .id(itemRequest.getId())
                 .description(itemRequest.getDescription())

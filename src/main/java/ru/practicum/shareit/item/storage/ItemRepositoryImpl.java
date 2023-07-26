@@ -85,10 +85,13 @@ public class ItemRepositoryImpl implements ItemRepository {
         if (text.isBlank()) {
             return new ArrayList<>();
         }
-        return readAll().stream().filter(item -> ((
-                item.getName().toLowerCase().contains(text.toLowerCase())
-                        || item.getDescription().toLowerCase().contains(text.toLowerCase()))
-                && item.getAvailable())).collect(Collectors.toList());
+        return readAll()
+                .stream()
+                .filter(item -> ((
+                        item.getName().toLowerCase().contains(text.toLowerCase())
+                                || item.getDescription().toLowerCase().contains(text.toLowerCase()))
+                        && item.getAvailable()))
+                .collect(Collectors.toList());
     }
 
     private void checkItem(Long itemId) {

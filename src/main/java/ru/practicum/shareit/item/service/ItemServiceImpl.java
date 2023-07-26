@@ -14,6 +14,7 @@ import ru.practicum.shareit.user.storage.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -31,12 +32,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> readAll() {
-        List<Item> itemsList = itemRepository.readAll();
-        List<ItemDto> itemDtoList = new ArrayList<>();
-        for (Item item : itemsList) {
-            itemDtoList.add(ItemMapper.toItemDto(item));
-        }
-        return itemDtoList;
+        return itemRepository.readAll()
+                .stream()
+                .map(ItemMapper::toItemDto)
+                .collect(Collectors.toList());
     }
 
     @Override
