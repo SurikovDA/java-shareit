@@ -62,8 +62,8 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository
                 .findAllByOwner(userRepository.findById(id).get())
                 .stream()
-                .sorted((o1, o2) -> o1.getId().
-                        compareTo(o2.getId()))
+                .sorted((o1, o2) -> o1.getId()
+                        .compareTo(o2.getId()))
                 .map(this::addLastAndNextBooking)
                 .collect(Collectors.toList());
     }
