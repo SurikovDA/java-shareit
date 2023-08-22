@@ -3,6 +3,10 @@ package ru.practicum.shareit.item.controller;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.comment.Comment;
+import ru.practicum.shareit.item.comment.CommentDto;
+import ru.practicum.shareit.item.comment.CommentMapper;
+import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
@@ -23,16 +27,16 @@ public class ItemController {
 
     //Получение всех вещей по id пользователя
     @GetMapping
-    public List<ItemDto> getAll(@RequestHeader("X-Sharer-User-id") long userId) {
+    public List<ItemBookingDto> getAll(@RequestHeader("X-Sharer-User-id") long userId) {
         log.info("Получен запрос GET /items");
         return itemService.readAllByUserId(userId);
     }
 
-    //Получение вещи по id
+    //Получение вещи по id пользователя
     @GetMapping("/{id}")
-    public ItemDto get(@RequestHeader("X-Sharer-User-id") Long userId, @Valid @PathVariable Long id) {
+    public ItemBookingDto get(@RequestHeader("X-Sharer-User-id") Long userId, @Valid @PathVariable Long id) {
         log.info("Получен запрос GET /items/{}", id);
-        return itemService.getItemById(id);
+        return itemService.getItemByUserId(id, userId);
     }
 
     //Создание вещи
@@ -63,6 +67,15 @@ public class ItemController {
     @GetMapping("/search")
     private List<ItemDto> searching(@RequestParam String text) {
         return itemService.findItemsByText(text);
+    }
+
+    //Добавление комментов
+    @PostMapping("/{id}/comment")
+    public CommentDto addComment(@RequestHeader("X-Sharer-User-id") long userId, @Valid @PathVariable Long id,
+                                 @Valid @RequestBody CommentDto commentDto) {
+        log.info("Получен запрос POST /{}/comment", id);
+        Comment comment = CommentMapper.toComment(commentDto);
+        return itemService.createComment(id, userId, comment);
     }
 }
 

@@ -8,8 +8,8 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.user.model.User;
 
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 
 /**
@@ -19,13 +19,27 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
+@Entity
+@Table(name = "bookings")
 public class Booking {
-    @NotNull(message = "id не может быть пустым!")
-    @Positive(message = "id не может быть отрицательным!")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
+    @NotNull(message = "Дата начала бронирования не может быть пустой!")
+    @Column(name = "start_date")
     private LocalDateTime start;
+    @NotNull(message = "Дата окончания бронирования не может быть пустой!")
+    @Column(name = "end_date")
     private LocalDateTime end;
+    @ManyToOne
+    @JoinColumn(name = "item_id", referencedColumnName = "id")
     private Item item;
+    @ManyToOne
+    @JoinColumn(name = "booker_id", referencedColumnName = "id")
     private User booker;
+    @Column(name = "status")
+    @NotNull
+    @Enumerated(EnumType.STRING)
     private Status status;
 }
