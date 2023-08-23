@@ -33,17 +33,4 @@ public class User {
     @JsonIgnore
     @OneToMany(mappedBy = "owner")
     private List<Item> items = new ArrayList<>();
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
-        User user = (User) o;
-        return Objects.equals(getId(), user.getId()) && Objects.equals(getName(), user.getName()) && Objects.equals(getEmail(), user.getEmail()) && Objects.equals(getItems(), user.getItems());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getName(), getEmail(), getItems());
-    }
 }

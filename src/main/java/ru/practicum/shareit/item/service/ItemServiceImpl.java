@@ -12,7 +12,6 @@ import ru.practicum.shareit.item.comment.CommentDto;
 import ru.practicum.shareit.item.comment.CommentMapper;
 import ru.practicum.shareit.item.comment.CommentRepository;
 import ru.practicum.shareit.exeptions.EntityNotFoundException;
-import ru.practicum.shareit.exeptions.ValidationException;
 import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
@@ -25,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,44 +59,55 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemBookingDto> readAllByUserId(Long id) {
+        Optional<User> optUser = userRepository.findById(id);
+        if (optUser.isEmpty()) {
+            throw new EntityNotFoundException("Заданного пользователя не существует");
+        }
         return itemRepository
-                .findAllByOwner(userRepository.findById(id).get())
+                .findAllByOwnerOrderByIdAsc(optUser.get())
                 .stream()
-                .sorted((o1, o2) -> o1.getId()
-                        .compareTo(o2.getId()))
                 .map(this::addLastAndNextBooking)
                 .collect(Collectors.toList());
     }
 
     @Override
     public ItemDto update(Long id, Item item, Long userId) {
-        User user = userRepository.findById(userId).get();
-        Item item1 = itemRepository.findById(id).get();
-        if (!Objects.equals(item1.getOwner().getId(), user.getId())) {
+        Optional<User> optUser = userRepository.findById(userId);
+        Optional<Item> optItem = itemRepository.findById(id);
+        if (optUser.isEmpty()) {
+            throw new EntityNotFoundException("Заданного пользователя не существует");
+        }
+        if (optItem.isEmpty()) {
+            throw new EntityNotFoundException("Заданного предмета не существует");
+        }
+        Item saveItem = optItem.get();
+        if (!Objects.equals(saveItem.getOwner().getId(), optUser.get().getId())) {
             throw new EntityNotFoundException("EntityNotFoundException (Предмет не может быть обновлен, т.к. он " +
                     "не принадлежит данному пользователю)");
         }
         if (item.getName() != null) {
-            itemRepository.findById(id).get().setName(item.getName());
+            saveItem.setName(item.getName());
         }
         if (item.getDescription() != null) {
-            itemRepository.findById(id).get().setDescription(item.getDescription());
+            saveItem.setDescription(item.getDescription());
         }
         if (item.getAvailable() != null) {
-            itemRepository.findById(id).get().setAvailable(item.getAvailable());
+            saveItem.setAvailable(item.getAvailable());
         }
-        Item updateItem = itemRepository.save(itemRepository.findById(id).get());
+        Item updateItem = itemRepository.save(saveItem);
         log.info("Предмет с id = '{}' обновлен", updateItem.getId());
         return ItemMapper.toItemDto(updateItem);
     }
 
     @Override
     public ItemDto getItemById(Long id) {
-        if (itemRepository.findById(id).isEmpty()) {
+        Optional<Item> optItem = itemRepository.findById(id);
+        if (optItem.isEmpty()) {
             throw new EntityNotFoundException("Указанного объекта не существует!");
         }
-        Item item = itemRepository.findById(id).get();
-        if (userRepository.findById(item.getOwner().getId()).isPresent()) {
+        Item item = optItem.get();
+        Optional<User> optUser = userRepository.findById(item.getOwner().getId());
+        if (optUser.isPresent()) {
             return ItemMapper.toItemDto(item);
         } else {
             throw new EntityNotFoundException("Такого пользователя не существует!");
@@ -105,8 +116,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void delete(Long id, Long userId) {
-        if (itemRepository.findById(id).isPresent()) {
-            itemRepository.delete(itemRepository.findById(id).get());
+        Optional<Item> optItem = itemRepository.findById(id);
+        if (optItem.isPresent()) {
+            itemRepository.delete(optItem.get());
         } else {
             throw new EntityNotFoundException(String.format("Предмет с id=%d отсутствует в списке", id));
         }
@@ -116,11 +128,7 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDto> findItemsByText(String text) {
         if (!text.isBlank()) {
             List<Item> itemsList = itemRepository.findByNameOrDescriptionContainingIgnoreCaseAndAvailableIsTrue(text, text);
-            List<ItemDto> itemDtoList = new ArrayList<>();
-            for (Item item : itemsList) {
-                itemDtoList.add(ItemMapper.toItemDto(item));
-            }
-            return itemDtoList;
+            return itemsList.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
         } else {
             return new ArrayList<>();
         }
@@ -128,11 +136,16 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public CommentDto createComment(Long itemId, Long userId, Comment comment) {
-        if (itemRepository.findById(itemId).isPresent()) {
+        Optional<Item> optItem = itemRepository.findById(itemId);
+        Optional<User> optUser = userRepository.findById(userId);
+        if (optUser.isEmpty()) {
+            throw new EntityNotFoundException("Заданного пользователя не существует");
+        }
+        if (optItem.isPresent()) {
             if (!bookingRepository.findAllByItemIdAndAndBooker_IdAndEndBefore(itemId, userId, LocalDateTime.now())
                     .isEmpty()) {
-                comment.setItem(itemRepository.findById(itemId).get());
-                comment.setAuthor(userRepository.findById(userId).get());
+                comment.setItem(optItem.get());
+                comment.setAuthor(optUser.get());
                 comment.setCreated(LocalDateTime.now());
                 return CommentMapper.toCommentDto(commentRepository.save(comment));
             } else {
@@ -146,14 +159,19 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemBookingDto getItemByUserId(Long id, Long userId) {
-        if (itemRepository.findById(id).isEmpty()) {
+        Optional<Item> optItem = itemRepository.findById(id);
+        Optional<User> optUser = userRepository.findById(userId);
+        if (optUser.isEmpty()) {
+            throw new EntityNotFoundException("Заданного пользователя не существует");
+        }
+        if (optItem.isEmpty()) {
             throw new EntityNotFoundException(String.format("Предмет с id = %d отсутствует в списке", id));
         } else {
-            Item item = itemRepository.findById(id).get();
-            if (item.getOwner().getId().equals(userRepository.findById(userId).get().getId())) {
+            Item item = optItem.get();
+            if (item.getOwner().getId().equals(optUser.get().getId())) {
                 return addLastAndNextBooking(item);
             } else {
-                List<Comment> comments = commentRepository.findAllByItem(itemRepository.findById(id).get());
+                List<Comment> comments = commentRepository.findAllByItem(item);
                 List<CommentDto> commentsDto = new ArrayList<>();
                 for (Comment comment : comments) {
                     CommentDto commentDto = CommentMapper.toCommentDto(comment);
@@ -184,20 +202,5 @@ public class ItemServiceImpl implements ItemService {
         }
         itemBookingDto.setComments(commentsDto);
         return itemBookingDto;
-    }
-
-    private void validate(Item item) {
-        if (item.getName().isEmpty()) {
-            log.info("ValidationException (Пустое название)");
-            throw new ValidationException("Пустое название");
-        }
-        if (item.getDescription().isEmpty()) {
-            log.info("ValidationException (Пустое описание)");
-            throw new ValidationException("Пустое описание");
-        }
-        if (item.getAvailable() == null) {
-            log.info("ValidationException (Ошибка статуса предмета с id = {})", item.getId());
-            throw new IllegalArgumentException("Ошибка статуса предмет");
-        }
     }
 }

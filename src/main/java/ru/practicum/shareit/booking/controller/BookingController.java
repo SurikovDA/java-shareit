@@ -24,21 +24,21 @@ public class BookingController {
     BookingService bookingService;
 
     @GetMapping
-    public List<Booking> getAll(@RequestHeader("X-Sharer-User-id") @Valid Long id,
+    public List<Booking> getAll(@RequestHeader("X-Sharer-User-id") Long id,
                                 @RequestParam(defaultValue = "ALL") State state) {
         log.info("Получен запрос GET /bookings?state={}", state);
         return bookingService.findAllByRenterId(id, state);
     }
 
     @GetMapping("/owner")
-    public List<Booking> getAllByOwnerId(@RequestHeader("X-Sharer-User-id") @Valid Long id,
+    public List<Booking> getAllByOwnerId(@RequestHeader("X-Sharer-User-id") Long id,
                                          @RequestParam(defaultValue = "ALL") State state) {
-        log.info("Получен запрос GET /owner");
+        log.info("Получен запрос GET /owner, ownerId={}", id);
         return bookingService.findAllByOwnerId(id, state);
     }
 
     @GetMapping("/{id}")
-    public Booking get(@RequestHeader("X-Sharer-User-id") long userId, @Valid @PathVariable Long id) {
+    public Booking get(@RequestHeader("X-Sharer-User-id") long userId, @PathVariable Long id) {
         log.info("Получен запрос GET /booking/{}", id);
         return bookingService.get(id, userId);
     }

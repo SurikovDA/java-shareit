@@ -8,11 +8,14 @@ import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exeptions.EntityNotFoundException;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -26,14 +29,21 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Booking create(Booking booking, Long bookerId) {
         validate(booking);
-        booking.setBooker(userRepository.findById(bookerId).get());
-        if (itemRepository.findById(booking.getItem().getId()).isPresent()) {
-            booking.setItem(itemRepository.findById(booking.getItem().getId()).get());
-            if (!itemRepository.findById(booking.getItem().getId()).get().getAvailable()) {
-                log.info("IllegalArgumentException (Предмет не является доступным)");
+        Optional<User> optBooker = userRepository.findById(bookerId);
+        if (optBooker.isEmpty()) {
+            throw new EntityNotFoundException("Пользователь с указанным bookerId не найден");
+        } else {
+            booking.setBooker(optBooker.get());
+        }
+        Optional<Item> optItem = itemRepository.findById(booking.getItem().getId());
+        if (optItem.isPresent()) {
+            booking.setItem(optItem.get());
+            if (!optItem.get().getAvailable()) {
+                log.warn("Предмет не является доступным");
                 throw new IllegalArgumentException("Предмет не является доступным");
             }
-            if (itemRepository.findById(booking.getItem().getId()).get().getOwner().getId().equals(bookerId)) {
+            if (optItem.get().getOwner().getId().equals(bookerId)) {
+                log.warn("Предмет не может быть забронирован у своего обладателя");
                 throw new EntityNotFoundException("Предмет не может быть забронирован у своего обладателя");
             }
             booking.setItem(booking.getItem());
@@ -48,9 +58,10 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking setStatus(Long id, Long userId, boolean approved) {
-        if (bookingRepository.findById(id).isPresent()) {
-            if (bookingRepository.findById(id).get().getItem().getOwner().getId().equals(userId)) {
-                Status status = bookingRepository.findById(id).get().getStatus();
+        Optional<Booking> optBooking = bookingRepository.findById(id);
+        if (optBooking.isPresent()) {
+            if (optBooking.get().getItem().getOwner().getId().equals(userId)) {
+                Status status = optBooking.get().getStatus();
                 switch (status) {
                     case APPROVED:
                         throw new IllegalArgumentException("Статус уже был принят как 'APPROVED'");
@@ -60,9 +71,9 @@ public class BookingServiceImpl implements BookingService {
                         throw new IllegalArgumentException("Статус уже был принят как 'CANCELED'");
                     case WAITING:
                         if (approved) {
-                            bookingRepository.findById(id).get().setStatus(Status.APPROVED);
+                            optBooking.get().setStatus(Status.APPROVED);
                         } else {
-                            bookingRepository.findById(id).get().setStatus(Status.REJECTED);
+                            optBooking.get().setStatus(Status.REJECTED);
                         }
                 }
             } else {
@@ -72,15 +83,16 @@ public class BookingServiceImpl implements BookingService {
         } else {
             throw new EntityNotFoundException(String.format("Бронь с id=%d отсутствует в списке", id));
         }
-        return bookingRepository.save(bookingRepository.findById(id).get());
+        return bookingRepository.save(optBooking.get());
     }
 
     @Override
     public Booking get(Long id, Long userId) {
-        if (bookingRepository.findById(id).isPresent()) {
-            if (bookingRepository.findById(id).get().getBooker().getId().equals(userId) ||
-                    bookingRepository.findById(id).get().getItem().getOwner().getId().equals(userId)) {
-                return bookingRepository.findById(id).get();
+        Optional<Booking> optBooking = bookingRepository.findById(id);
+        if (optBooking.isPresent()) {
+            if (optBooking.get().getBooker().getId().equals(userId) ||
+                    optBooking.get().getItem().getOwner().getId().equals(userId)) {
+                return optBooking.get();
             } else {
                 throw new EntityNotFoundException(String.format("Невозможно выдать данные о брони, т.к. " +
                         "пользователь с id = %d не является арендатором или владельцем предмета с id = %d", userId, id));
@@ -149,16 +161,12 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private void validate(Booking booking) {
-        if (booking.getStart().isBefore(LocalDateTime.now())) {
-            log.info("ValidationException (Нельзя забронировать вещь в прошедшем времени)");
-            throw new IllegalArgumentException("Бронь в прошедшем времени");
-        }
         if (booking.getEnd().isBefore(booking.getStart())) {
-            log.info("ValidationException (Нельзя завершить бронь раньше ее регистрации)");
+            log.warn("Нельзя завершить бронь раньше ее регистрации");
             throw new IllegalArgumentException("Завершение брони раньше ее регистрации");
         }
         if (booking.getStart().equals(booking.getEnd())) {
-            log.info("ValidationException (Время начала бронирования равна времени конца бронирования)");
+            log.warn("Время начала бронирования равна времени конца бронирования");
             throw new IllegalArgumentException("Время начала бронирования равна времени конца бронирования");
         }
     }

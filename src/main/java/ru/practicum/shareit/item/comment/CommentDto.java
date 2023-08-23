@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.dto.ItemDto;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
@@ -17,7 +17,7 @@ public class CommentDto {
     private Long id;
     @NotBlank(message = "Комментарий не может быть пустым")
     private String text;
-    private Item item;
+    private ItemDto item;
     private Long authorId;
     private String authorName;
     private LocalDateTime created;

@@ -74,6 +74,7 @@ public class ItemController {
     public CommentDto addComment(@RequestHeader("X-Sharer-User-id") long userId, @Valid @PathVariable Long id,
                                  @Valid @RequestBody CommentDto commentDto) {
         log.info("Получен запрос POST /{}/comment", id);
+        commentDto.setItem(itemService.getItemById(id));
         Comment comment = CommentMapper.toComment(commentDto);
         return itemService.createComment(id, userId, comment);
     }

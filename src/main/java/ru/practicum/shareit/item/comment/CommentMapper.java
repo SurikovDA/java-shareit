@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.comment;
 
+import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.user.model.User;
 
 public class CommentMapper {
@@ -8,7 +9,7 @@ public class CommentMapper {
                 .builder()
                 .id(commentDto.getId())
                 .text(commentDto.getText())
-                .item(commentDto.getItem())
+                .item(ItemMapper.toItem(commentDto.getItem()))
                 .author(User
                         .builder()
                         .id(commentDto.getAuthorId())
@@ -22,7 +23,7 @@ public class CommentMapper {
                 .builder()
                 .id(comment.getId())
                 .text(comment.getText())
-                .item(comment.getItem())
+                .item(ItemMapper.toItemDto(comment.getItem()))
                 .authorName(comment.getAuthor().getName())
                 .created(comment.getCreated())
                 .build();
