@@ -9,8 +9,6 @@ import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.Objects;
-
 
 /**
  * TODO Sprint add-controllers.
