@@ -185,13 +185,14 @@ public class ItemServiceImpl implements ItemService {
     private ItemBookingDto addLastAndNextBooking(Item item) {
         ItemBookingDto itemBookingDto = ItemMapper.toItemWishBookingAndCommentDto(item, null,
                 null, null);
-        Booking lastBooking = bookingRepository.findFirstByItemIdAndStartBeforeOrderByStartDesc(item.getId(),
-                LocalDateTime.now());
+        Booking lastBooking = bookingRepository.findFirstByItemIdAndStartBeforeAndStatusOrderByStartDesc(item.getId(),
+                LocalDateTime.now(), Status.APPROVED);
         if (lastBooking != null) {
             itemBookingDto.setLastBooking(BookingMapper.toShortDto(lastBooking));
         }
-        Booking nextBooking = bookingRepository.findFirstByItemAndStartAfterOrderByStart(item, LocalDateTime.now());
-        if (nextBooking != null && nextBooking.getStatus().equals(Status.APPROVED)) {
+        Booking nextBooking = bookingRepository.findFirstByItemAndStartAfterAndStatusOrderByStart(item, LocalDateTime
+                .now(), Status.APPROVED);
+        if (nextBooking != null) {
             itemBookingDto.setNextBooking(BookingMapper.toShortDto(nextBooking));
         }
         List<Comment> comments = commentRepository.findAllByItem(item);
