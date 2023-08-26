@@ -144,8 +144,8 @@ public class ItemServiceImpl implements ItemService {
         }
         Pageable pageable = PageRequest.of(from / size, size);
         if (!text.isBlank()) {
-            List<Item> itemsList = itemRepository.findByNameOrDescriptionContainingIgnoreCaseAndAvailableIsTrue(text
-                    , text, pageable).toList();
+            List<Item> itemsList = itemRepository.findByNameOrDescriptionContainingIgnoreCaseAndAvailableIsTrue(text,
+                    text, pageable).toList();
             return itemsList.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
         } else {
             return new ArrayList<>();

@@ -126,11 +126,11 @@ public class BookingServiceImpl implements BookingService {
                     return bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(renterId,
                             now, now, pageable).toList();
                 case WAITING:
-                    return bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(renterId, Status.WAITING
-                            , pageable).toList();
+                    return bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(renterId, Status.WAITING,
+                            pageable).toList();
                 case REJECTED:
-                    return bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(renterId, Status.REJECTED
-                            , pageable).toList();
+                    return bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(renterId, Status.REJECTED,
+                            pageable).toList();
                 default:
                     throw new IllegalArgumentException("Unknown state: " + state);
             }
@@ -164,11 +164,11 @@ public class BookingServiceImpl implements BookingService {
                     return bookingRepository.findAllByItem_OwnerIdAndStartBeforeAndEndAfterOrderByStartDesc(ownerId,
                             now, now, pageable).toList();
                 case WAITING:
-                    return bookingRepository.findAllByItem_OwnerIdAndStatusOrderByStartDesc(ownerId, Status.WAITING
-                            , pageable).toList();
+                    return bookingRepository.findAllByItem_OwnerIdAndStatusOrderByStartDesc(ownerId, Status.WAITING,
+                            pageable).toList();
                 case REJECTED:
-                    return bookingRepository.findAllByItem_OwnerIdAndStatusOrderByStartDesc(ownerId, Status.REJECTED
-                            , pageable).toList();
+                    return bookingRepository.findAllByItem_OwnerIdAndStatusOrderByStartDesc(ownerId, Status.REJECTED,
+                            pageable).toList();
                 default:
                     throw new IllegalArgumentException("Unknown state: " + state);
             }
