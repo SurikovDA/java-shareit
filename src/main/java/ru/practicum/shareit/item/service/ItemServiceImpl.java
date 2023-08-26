@@ -2,6 +2,8 @@ package ru.practicum.shareit.item.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
@@ -50,21 +52,31 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> readAll() {
-        return itemRepository.findAll()
+    public List<ItemDto> readAll(Integer from, Integer size) {
+        if (from < 0 || size <= 0) {
+            log.info("Параметры поиска введены не корректно");
+            throw new IllegalArgumentException("Параметры поиска введены не корректно");
+        }
+        Pageable pageable = PageRequest.of(from / size, size);
+        return itemRepository.findAll(pageable)
                 .stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<ItemBookingDto> readAllByUserId(Long id) {
+    public List<ItemBookingDto> readAllByUserId(Long id, Integer from, Integer size) {
+        if (from < 0 || size <= 0) {
+            log.info("Параметры поиска введены не корректно");
+            throw new IllegalArgumentException("Параметры поиска введены не корректно");
+        }
+        Pageable pageable = PageRequest.of(from / size, size);
         Optional<User> optUser = userRepository.findById(id);
         if (optUser.isEmpty()) {
             throw new EntityNotFoundException("Заданного пользователя не существует");
         }
         return itemRepository
-                .findAllByOwnerOrderByIdAsc(optUser.get())
+                .findAllByOwnerOrderByIdAsc(optUser.get(), pageable)
                 .stream()
                 .map(this::addLastAndNextBooking)
                 .collect(Collectors.toList());
@@ -125,9 +137,15 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> findItemsByText(String text) {
+    public List<ItemDto> findItemsByText(String text, Integer from, Integer size) {
+        if (from < 0 || size <= 0) {
+            log.info("Параметры поиска введены не корректно");
+            throw new IllegalArgumentException("Параметры поиска введены не корректно");
+        }
+        Pageable pageable = PageRequest.of(from / size, size);
         if (!text.isBlank()) {
-            List<Item> itemsList = itemRepository.findByNameOrDescriptionContainingIgnoreCaseAndAvailableIsTrue(text, text);
+            List<Item> itemsList = itemRepository.findByNameOrDescriptionContainingIgnoreCaseAndAvailableIsTrue(text
+                    , text, pageable).toList();
             return itemsList.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
         } else {
             return new ArrayList<>();

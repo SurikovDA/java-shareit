@@ -29,4 +29,5 @@ public class ItemDto {
     private Boolean available;
     private UserDto owner;
     private ItemRequestDto request;
+    private Long requestId;
 }

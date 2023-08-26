@@ -11,9 +11,9 @@ import java.util.List;
 public interface ItemService {
     ItemDto create(Item item, Long userId);
 
-    List<ItemDto> readAll();
+    List<ItemDto> readAll(Integer from, Integer size);
 
-    List<ItemBookingDto> readAllByUserId(Long id);
+    List<ItemBookingDto> readAllByUserId(Long id, Integer from, Integer size);
 
     ItemDto update(Long id, Item item, Long userId);
 
@@ -21,7 +21,7 @@ public interface ItemService {
 
     void delete(Long id, Long userId);
 
-    List<ItemDto> findItemsByText(String text);
+    List<ItemDto> findItemsByText(String text, Integer from, Integer size);
 
     public CommentDto createComment(Long itemId, Long userId, Comment comment);
 

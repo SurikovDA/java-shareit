@@ -1,30 +1,32 @@
 package ru.practicum.shareit.request.mapper;
 
-import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.request.dto.ItemRequestWithAnswersDto;
+import ru.practicum.shareit.request.dto.ItemRequestWithoutAnswersDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 
+import java.util.stream.Collectors;
+
 public class RequestMapper {
-    public static ItemRequest toRequest(ItemRequestDto itemRequestDto) {
-        if (itemRequestDto == null) {
-            return null;
-        }
+
+    public static ItemRequest toItemRequest(ItemRequestWithoutAnswersDto itemRequestDto) {
         return ItemRequest.builder()
                 .id(itemRequestDto.getId())
                 .description(itemRequestDto.getDescription())
-                .requestor(itemRequestDto.getRequestor())
                 .created(itemRequestDto.getCreated())
+                .requestor(itemRequestDto.getRequestor())
                 .build();
     }
 
-    public static ItemRequestDto toRequestDto(ItemRequest itemRequest) {
-        if (itemRequest == null) {
-            return null;
-        }
-        return ItemRequestDto.builder()
+    public static ItemRequestWithAnswersDto toItemRequestWithAnswersDto(ItemRequest itemRequest) {
+        return ItemRequestWithAnswersDto.builder()
                 .id(itemRequest.getId())
                 .description(itemRequest.getDescription())
                 .requestor(itemRequest.getRequestor())
                 .created(itemRequest.getCreated())
+                .items(itemRequest.getItems().stream()
+                        .map(ItemMapper::toItemDto)
+                        .collect(Collectors.toList()))
                 .build();
     }
 }

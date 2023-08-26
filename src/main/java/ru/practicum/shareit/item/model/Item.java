@@ -35,6 +35,7 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private User owner;
-    @Transient
-    private ItemRequest request;
+    @ManyToOne
+    @JoinColumn(name = "item_request_id", referencedColumnName = "id")
+    private ItemRequest itemRequest;
 }
