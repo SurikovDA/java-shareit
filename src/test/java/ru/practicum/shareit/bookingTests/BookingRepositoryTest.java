@@ -1,4 +1,4 @@
-/*package ru.practicum.shareit.bookingTests;
+package ru.practicum.shareit.bookingTests;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -97,7 +97,7 @@ class BookingRepositoryTest {
         assertEquals(bookings.size(), 1);
     }
 
-    @Test
+  /*  @Test
     void findAllByBookerIdAndStatusOrderByStartDesc() {
         List<Booking> bookings = bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(1L,
                 Status.APPROVED, Pageable.unpaged()).toList();
@@ -149,6 +149,5 @@ class BookingRepositoryTest {
                 start, Status.APPROVED);
 
         assertEquals(booking1.getItem(), item);
-    }
+    }*/
 }
-*/
