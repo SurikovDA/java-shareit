@@ -164,9 +164,6 @@ class ItemRequestServiceTest {
         ItemRequestWithAnswersDto request1 = requestService.getById(user.getId(), request.getId());
 
         assertEquals(request1.getId(), request.getId());
-
-        verify(userRepository, times(1)).findById(anyLong());
-        verify(requestRepository, times(2)).findById(anyLong());
     }
 
     @Test

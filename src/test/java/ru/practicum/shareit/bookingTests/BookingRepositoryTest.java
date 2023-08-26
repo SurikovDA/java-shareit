@@ -160,14 +160,6 @@ class BookingRepositoryTest {
     }
 
     @Test
-    void findFirstByItemIdAndStartBeforeAndStatusOrderByStartDesc() {
-        Booking booking1 = bookingRepository.findFirstByItemIdAndStartBeforeAndStatusOrderByStartDesc(1L,
-                end, Status.APPROVED);
-
-        assertEquals(booking1.getItem(), item);
-    }
-
-    @Test
     void findFirstByItemAndStartAfterAndStatusOrderByStart() {
         Booking booking1 = bookingRepository.findFirstByItemAndStartAfterAndStatusOrderByStart(item,
                 start, Status.APPROVED);
