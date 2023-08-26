@@ -49,13 +49,13 @@ class BookingRepositoryTest {
                 .email("user1@mail.ru")
                 .build());
         request = requestRepository.save(ItemRequest.builder()
-                .id(1L)
+                .id(2L)
                 .description("description")
                 .requestor(user)
                 .created(LocalDateTime.now())
                 .build());
         item = itemRepository.save(Item.builder()
-                .id(1L)
+                .id(3L)
                 .name("item1")
                 .description("description1")
                 .available(true)
@@ -63,7 +63,7 @@ class BookingRepositoryTest {
                 .itemRequest(request)
                 .build());
         booking = bookingRepository.save(Booking.builder()
-                .id(1L)
+                .id(4L)
                 .booker(user)
                 .status(Status.APPROVED)
                 .item(item)
@@ -79,7 +79,7 @@ class BookingRepositoryTest {
         List<Booking> bookings = bookingRepository.findAllByBookerIdOrderByStartDesc(1L, Pageable.unpaged()).toList();
 
         assertEquals(bookings.size(), 1);
-    }/*
+    }
 
     @Test
     void findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc() {
@@ -165,5 +165,5 @@ class BookingRepositoryTest {
                 1L, end);
 
         assertEquals(bookings.size(), 1);
-    }*/
+    }
 }
