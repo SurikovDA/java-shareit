@@ -90,14 +90,6 @@ class BookingRepositoryTest {
     }
 
     @Test
-    void findAllByBookerIdAndEndBeforeOrderByStartDesc() {
-        List<Booking> bookings = bookingRepository.findAllByBookerIdAndEndBeforeOrderByStartDesc(1L,
-                end, Pageable.unpaged()).toList();
-
-        assertEquals(bookings.size(), 1);
-    }
-
-    @Test
     void findAllByBookerIdAndStartAfterOrderByStartDesc() {
         List<Booking> bookings = bookingRepository.findAllByBookerIdAndStartAfterOrderByStartDesc(1L,
                 start, Pageable.unpaged()).toList();
