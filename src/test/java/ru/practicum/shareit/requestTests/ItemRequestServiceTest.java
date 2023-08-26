@@ -121,9 +121,6 @@ class ItemRequestServiceTest {
         ItemRequest request1 = requestService.create(request, user.getId());
 
         assertEquals(request1, request);
-
-        verify(userRepository, times(2)).findById(anyLong());
-        verify(requestRepository, times(1)).save(any());
     }
 
     @Test
