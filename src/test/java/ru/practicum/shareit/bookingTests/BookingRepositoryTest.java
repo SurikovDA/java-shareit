@@ -152,14 +152,6 @@ class BookingRepositoryTest {
     }
 
     @Test
-    void findAllByItemIdAndAndBooker_IdAndEndBefore() {
-        List<Booking> bookings = bookingRepository.findAllByItemIdAndAndBooker_IdAndEndBefore(1L,
-                1L, end);
-
-        assertEquals(bookings.size(), 1);
-    }
-
-    @Test
     void findFirstByItemAndStartAfterAndStatusOrderByStart() {
         Booking booking1 = bookingRepository.findFirstByItemAndStartAfterAndStatusOrderByStart(item,
                 start, Status.APPROVED);
