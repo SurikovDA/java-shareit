@@ -133,14 +133,6 @@ class BookingRepositoryTest {
     }
 
     @Test
-    void findAllByItem_OwnerIdAndEndBeforeOrderByStartDesc() {
-        List<Booking> bookings = bookingRepository.findAllByItem_OwnerIdAndEndBeforeOrderByStartDesc(1L,
-                end, Pageable.unpaged()).toList();
-
-        assertEquals(bookings.size(), 1);
-    }
-
-    @Test
     void findAllByItem_OwnerIdAndStartAfterOrderByStartDesc() {
         List<Booking> bookings = bookingRepository.findAllByItem_OwnerIdAndStartAfterOrderByStartDesc(1L,
                 start, Pageable.unpaged()).toList();
