@@ -1,5 +1,6 @@
 package ru.practicum.shareit.request.mapper;
 
+import lombok.Generated;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.request.dto.ItemRequestWithAnswersDto;
 import ru.practicum.shareit.request.dto.ItemRequestWithoutAnswersDto;
@@ -7,6 +8,7 @@ import ru.practicum.shareit.request.model.ItemRequest;
 
 import java.util.stream.Collectors;
 
+@Generated
 public class RequestMapper {
 
     public static ItemRequest toItemRequest(ItemRequestWithoutAnswersDto itemRequestDto) {
