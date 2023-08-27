@@ -1,10 +1,7 @@
 package ru.practicum.shareit.request.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -17,6 +14,7 @@ import java.util.List;
 /**
  * TODO Sprint add-item-requests.
  */
+@Generated
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
