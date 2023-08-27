@@ -9,6 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.item.comment.Comment;
+import ru.practicum.shareit.item.comment.CommentDto;
 import ru.practicum.shareit.item.comment.CommentMapper;
 import ru.practicum.shareit.item.controller.ItemController;
 import ru.practicum.shareit.item.dto.ItemBookingDto;
@@ -25,6 +26,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -74,8 +76,7 @@ class ItemControllerTest {
     void getAll() throws Exception {
         ItemBookingDto itemBookingDto = ItemMapper.toItemWishBookingAndCommentDto(item, null, null,
                 List.of(CommentMapper.toCommentDto(comment)));
-        Mockito
-                .when(itemService.readAllByUserId(anyLong(), any(), any()))
+        when(itemService.readAllByUserId(anyLong(), any(), any()))
                 .thenReturn(List.of(itemBookingDto));
 
         mvc.perform(get("/items")
@@ -88,8 +89,7 @@ class ItemControllerTest {
 
     @Test
     void getAllFail() throws Exception {
-        Mockito
-                .when(itemService.readAllByUserId(anyLong(), any(), any()))
+        when(itemService.readAllByUserId(anyLong(), any(), any()))
                 .thenThrow(new IllegalArgumentException());
 
         mvc.perform(get("/items?from=-1")
@@ -104,8 +104,7 @@ class ItemControllerTest {
     void getItem() throws Exception {
         ItemBookingDto itemBookingDto = ItemMapper.toItemWishBookingAndCommentDto(item, null, null,
                 List.of(CommentMapper.toCommentDto(comment)));
-        Mockito
-                .when(itemService.getItemByUserId(anyLong(), anyLong()))
+        when(itemService.getItemByUserId(anyLong(), anyLong()))
                 .thenReturn(itemBookingDto);
 
         mvc.perform(get("/items/1")
@@ -119,8 +118,7 @@ class ItemControllerTest {
     @Test
     void create() throws Exception {
         ItemDto itemDto = ItemMapper.toItemDto(itemUpdate);
-        Mockito
-                .when(itemService.create(any(), anyLong()))
+        when(itemService.create(any(), anyLong()))
                 .thenReturn(itemDto);
 
         mvc.perform(post("/items")
@@ -135,8 +133,7 @@ class ItemControllerTest {
 
     @Test
     void update() throws Exception {
-        Mockito
-                .when(itemService.update(anyLong(), any(), anyLong()))
+        when(itemService.update(anyLong(), any(), anyLong()))
                 .thenReturn(ItemMapper.toItemDto(item));
 
         mvc.perform(patch("/items/1")
@@ -150,8 +147,7 @@ class ItemControllerTest {
 
     @Test
     void deleteItem() throws Exception {
-        Mockito
-                .when(itemService.getItemById(anyLong()))
+        when(itemService.getItemById(anyLong()))
                 .thenReturn(null);
 
         mvc.perform(delete("/items/1")
@@ -166,11 +162,30 @@ class ItemControllerTest {
     void searching() throws Exception {
         ItemDto itemDto = ItemMapper.toItemDto(itemUpdate);
         List<ItemDto> items = List.of(itemDto);
-        Mockito
-                .when(itemService.findItemsByText(any(), any(), any()))
+        when(itemService.findItemsByText(any(), any(), any()))
                 .thenReturn(items);
 
         mvc.perform(get("/items/search?text='item'")
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", 1L)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void addComment() throws Exception {
+        CommentDto commentDto = CommentMapper.toCommentDto(comment);
+        itemService.create(item, 1L);
+        Mockito
+                .when(itemService.getItemById(anyLong()))
+                .thenReturn(ItemMapper.toItemDto(item));
+        Mockito
+                .when(itemService.createComment(anyLong(), anyLong(), any()))
+                .thenReturn(commentDto);
+
+        mvc.perform(post("/items/1/comment")
+                        .content(mapper.writeValueAsString(commentDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("X-Sharer-User-Id", 1L)
