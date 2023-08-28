@@ -63,10 +63,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequestWithAnswersDto> getAll(Long userId, Integer from, Integer size) {
-        if (from < 0) {
-            log.info("Параметры поиска введены не корректно");
-            throw new IllegalArgumentException("Параметры поиска введены не корректно");
-        }
         Pageable pageable = PageRequest.of(from / size, size);
         List<ItemRequest> itemRequests = itemRequestRepository.findAll(pageable).toList();
         return itemRequests

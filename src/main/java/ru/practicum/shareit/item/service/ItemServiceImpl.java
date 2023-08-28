@@ -53,10 +53,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> readAll(Integer from, Integer size) {
-        if (from < 0 || size <= 0) {
-            log.info("Параметры поиска введены не корректно");
-            throw new IllegalArgumentException("Параметры поиска введены не корректно");
-        }
         Pageable pageable = PageRequest.of(from / size, size);
         return itemRepository.findAll(pageable)
                 .stream()
@@ -66,10 +62,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemBookingDto> readAllByUserId(Long id, Integer from, Integer size) {
-        if (from < 0 || size <= 0) {
-            log.info("Параметры поиска введены не корректно");
-            throw new IllegalArgumentException("Параметры поиска введены не корректно");
-        }
         Pageable pageable = PageRequest.of(from / size, size);
         Optional<User> optUser = userRepository.findById(id);
         if (optUser.isEmpty()) {
@@ -138,10 +130,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> findItemsByText(String text, Integer from, Integer size) {
-        if (from < 0 || size <= 0) {
-            log.info("Параметры поиска введены не корректно");
-            throw new IllegalArgumentException("Параметры поиска введены не корректно");
-        }
         Pageable pageable = PageRequest.of(from / size, size);
         if (!text.isBlank()) {
             List<Item> itemsList = itemRepository.findByNameOrDescriptionContainingIgnoreCaseAndAvailableIsTrue(text,

@@ -2,6 +2,7 @@ package ru.practicum.shareit.request.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestWithAnswersDto;
 import ru.practicum.shareit.request.dto.ItemRequestWithoutAnswersDto;
@@ -17,6 +18,7 @@ import java.util.List;
  * TODO Sprint add-item-requests.
  */
 @RestController
+@Validated
 @RequestMapping(path = "/requests")
 @AllArgsConstructor
 @Slf4j

@@ -106,10 +106,6 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<Booking> findAllByRenterId(Long renterId, State state, Integer from, Integer size) {
-        if (from < 0 || size <= 0) {
-            log.info("Параметры поиска введены не корректно");
-            throw new IllegalArgumentException("Параметры поиска введены не корректно");
-        }
         Pageable pageable = PageRequest.of(from / size, size);
         if (userRepository.findById(renterId).isPresent()) {
             LocalDateTime now = LocalDateTime.now();
@@ -144,10 +140,6 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<Booking> findAllByOwnerId(Long ownerId, State state, Integer from, Integer size) {
-        if (from < 0 || size <= 0) {
-            log.info("Параметры поиска введены не корректно");
-            throw new IllegalArgumentException("Параметры поиска введены не корректно");
-        }
         Pageable pageable = PageRequest.of(from / size, size);
         if (userRepository.findById(ownerId).isPresent()) {
             LocalDateTime now = LocalDateTime.now();
