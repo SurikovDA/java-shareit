@@ -16,7 +16,6 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -64,11 +63,9 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public List<ItemRequestWithAnswersDto> getAll(Long userId, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size);
-        List<ItemRequest> itemRequests = itemRequestRepository.findAll(pageable).toList();
+        List<ItemRequest> itemRequests = itemRequestRepository.findAllByRequestorIdNotOrderByCreatedDesc(userId, pageable).toList();
         return itemRequests
                 .stream()
-                .filter(itemRequest -> !itemRequest.getRequestor().getId().equals(userId))
-                .sorted(Comparator.comparing(ItemRequest::getCreated).reversed())
                 .map(RequestMapper::toItemRequestWithAnswersDto)
                 .collect(Collectors.toList());
     }
