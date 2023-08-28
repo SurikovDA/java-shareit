@@ -144,7 +144,7 @@ class ItemServiceTest {
 
     @Test
     void readAllFail() {
-        assertThrows(IllegalArgumentException.class, () -> itemService.readAll(-1, 10));
+        assertThrows(NullPointerException.class, () -> itemService.readAll(-1, 10));
     }
 
     @Test
@@ -166,7 +166,7 @@ class ItemServiceTest {
 
     @Test
     void readAllByUserIdFail() {
-        assertThrows(IllegalArgumentException.class, () -> itemService.readAllByUserId(1L, -1, 10));
+        assertThrows(EntityNotFoundException.class, () -> itemService.readAllByUserId(1L, -1, 10));
     }
 
     @Test
@@ -288,7 +288,7 @@ class ItemServiceTest {
 
     @Test
     void findItemsByTextFail() {
-        assertThrows(IllegalArgumentException.class, () -> itemService.findItemsByText("Text", -1, 10));
+        assertThrows(NullPointerException.class, () -> itemService.findItemsByText("Text", -1, 10));
     }
 
     @Test

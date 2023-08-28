@@ -351,7 +351,7 @@ class BookingServiceTest {
 
     @Test
     void findAllByRenterIdFailNegativeFrom() {
-        assertThrows(IllegalArgumentException.class, () -> bookingService.findAllByRenterId(user.getId(), State.WAITING,
+        assertThrows(EntityNotFoundException.class, () -> bookingService.findAllByRenterId(user.getId(), State.WAITING,
                 -1, 10));
     }
 
@@ -438,7 +438,7 @@ class BookingServiceTest {
 
     @Test
     void findAllByOwnerIdFailWithNegativeFrom() {
-        assertThrows(IllegalArgumentException.class, () -> bookingService.findAllByOwnerId(user.getId(), State.WAITING,
+        assertThrows(EntityNotFoundException.class, () -> bookingService.findAllByOwnerId(user.getId(), State.WAITING,
                 -1, 10));
 
     }

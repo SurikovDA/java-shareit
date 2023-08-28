@@ -31,7 +31,7 @@ public class ItemController {
     @GetMapping
     public List<ItemBookingDto> getAll(@RequestHeader("X-Sharer-User-id") long userId,
                                        @PositiveOrZero @RequestParam(defaultValue = "0") int from,
-                                       @Positive @RequestParam(defaultValue = "10") int size) {
+                                       @Positive @RequestParam(defaultValue = "20") int size) {
         log.info("Получен запрос GET /items");
         return itemService.readAllByUserId(userId, from, size);
     }
@@ -71,7 +71,7 @@ public class ItemController {
     @GetMapping("/search")
     private List<ItemDto> searching(@RequestParam String text,
                                     @PositiveOrZero @RequestParam(defaultValue = "0") int from,
-                                    @Positive @RequestParam(defaultValue = "10") int size) {
+                                    @Positive @RequestParam(defaultValue = "20") int size) {
         return itemService.findItemsByText(text, from, size);
     }
 
