@@ -5,6 +5,7 @@ import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.request.dto.ItemRequestWithAnswersDto;
 import ru.practicum.shareit.request.dto.ItemRequestWithoutAnswersDto;
 import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.user.mapper.UserMapper;
 
 import java.util.stream.Collectors;
 
@@ -15,8 +16,8 @@ public class RequestMapper {
         return ItemRequest.builder()
                 .id(itemRequestDto.getId())
                 .description(itemRequestDto.getDescription())
+                .requestor(UserMapper.toUser(itemRequestDto.getRequestor()))
                 .created(itemRequestDto.getCreated())
-                .requestor(itemRequestDto.getRequestor())
                 .build();
     }
 
@@ -24,7 +25,7 @@ public class RequestMapper {
         return ItemRequestWithAnswersDto.builder()
                 .id(itemRequest.getId())
                 .description(itemRequest.getDescription())
-                .requestor(itemRequest.getRequestor())
+                .requestor(UserMapper.toUserDto(itemRequest.getRequestor()))
                 .created(itemRequest.getCreated())
                 .items(itemRequest.getItems().stream()
                         .map(ItemMapper::toItemDto)

@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestWithAnswersDto;
 import ru.practicum.shareit.request.dto.ItemRequestWithoutAnswersDto;
-import ru.practicum.shareit.request.mapper.RequestMapper;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
@@ -28,8 +27,7 @@ public class ItemRequestController {
     public ItemRequest create(@RequestHeader("X-Sharer-User-id") long userId,
                               @Valid @RequestBody ItemRequestWithoutAnswersDto itemRequestDto) {
         log.info("Получен запрос POST /requests");
-        ItemRequest itemRequest = RequestMapper.toItemRequest(itemRequestDto);
-        return itemRequestService.create(itemRequest, userId);
+        return itemRequestService.create(itemRequestDto, userId);
     }
 
     @GetMapping

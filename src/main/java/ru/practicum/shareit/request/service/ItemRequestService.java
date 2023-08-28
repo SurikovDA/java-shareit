@@ -1,12 +1,13 @@
 package ru.practicum.shareit.request.service;
 
 import ru.practicum.shareit.request.dto.ItemRequestWithAnswersDto;
+import ru.practicum.shareit.request.dto.ItemRequestWithoutAnswersDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 
 import java.util.List;
 
 public interface ItemRequestService {
-    ItemRequest create(ItemRequest itemRequest, Long userId);
+    ItemRequest create(ItemRequestWithoutAnswersDto itemRequestDto, Long userId);
 
     List<ItemRequestWithAnswersDto> getAllByRequestorId(Long id, Integer from, Integer size);
 

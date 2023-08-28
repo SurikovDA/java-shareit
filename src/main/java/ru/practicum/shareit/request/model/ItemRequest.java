@@ -1,6 +1,5 @@
 package ru.practicum.shareit.request.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
@@ -34,7 +33,6 @@ public class ItemRequest {
     private User requestor;
     @Column(name = "created")
     private LocalDateTime created;
-    @JsonIgnore
     @OneToMany(mappedBy = "itemRequest")
     private List<Item> items = new ArrayList<>();
 }
