@@ -63,7 +63,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public List<ItemRequestWithAnswersDto> getAll(Long userId, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size);
-        List<ItemRequest> itemRequests = itemRequestRepository.findAllByRequestorIdNotOrderByCreatedDesc(userId, pageable).toList();
+        List<ItemRequest> itemRequests = itemRequestRepository
+                .findAllByRequestorIdNotOrderByCreatedDesc(userId, pageable).toList();
         return itemRequests
                 .stream()
                 .map(RequestMapper::toItemRequestWithAnswersDto)

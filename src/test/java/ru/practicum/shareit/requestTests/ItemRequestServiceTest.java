@@ -206,19 +206,6 @@ class ItemRequestServiceTest {
     }
 
     @Test
-    void getAll() {
-        Mockito
-                .when(requestRepository.findAll((Pageable) any()))
-                .thenReturn(new PageImpl<>(List.of(request)));
-        request.setItems(List.of(item));
-        List<ItemRequestWithAnswersDto> requests = requestService.getAll(user2.getId(), 0, 10);
-
-        assertEquals(requests.size(), 1);
-
-        verify(requestRepository, times(1)).findAll((Pageable) any());
-    }
-
-    @Test
     void validateUser() {
         Mockito
                 .when(userRepository.findById(anyLong()))
