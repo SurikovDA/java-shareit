@@ -69,8 +69,8 @@ public class ItemRequestDtoTest {
         assertThat(result).extractingJsonPathNumberValue("$.id").isEqualTo(1);
         assertThat(result).extractingJsonPathStringValue("$.description").isEqualTo("description");
         assertThat(result).extractingJsonPathNumberValue("$.requestor.id").isEqualTo(1);
-        assertThat(result).extractingJsonPathStringValue("$.created").isEqualTo(LocalDateTime.of(2025,
-                1, 1, 1, 1, 1, 1).toString());
+        assertThat(result).extractingJsonPathStringValue("$.created")
+                .isEqualTo("2025-01-01T01:01:01.000000001");
         assertThat(result).extractingJsonPathArrayValue("$.items").extracting("id").contains(1);
     }
 
@@ -87,7 +87,7 @@ public class ItemRequestDtoTest {
         assertThat(result).extractingJsonPathNumberValue("$.id").isEqualTo(1);
         assertThat(result).extractingJsonPathStringValue("$.description").isEqualTo("description");
         assertThat(result).extractingJsonPathNumberValue("$.requestor.id").isEqualTo(1);
-        assertThat(result).extractingJsonPathStringValue("$.created").isEqualTo(LocalDateTime.of(2025,
-                1, 1, 1, 1, 1, 1).toString());
+        assertThat(result).extractingJsonPathStringValue("$.created")
+                .isEqualTo("2025-01-01T01:01:01.000000001");
     }
 }

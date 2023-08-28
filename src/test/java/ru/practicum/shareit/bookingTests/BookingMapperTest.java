@@ -36,10 +36,10 @@ public class BookingMapperTest {
                 .build();
         JsonContent<BookingDto> result = jsonBookingDto.write(bookingDto);
         assertThat(result).extractingJsonPathNumberValue("$.id").isEqualTo(1);
-        assertThat(result).extractingJsonPathStringValue("$.start").isEqualTo(LocalDateTime.of(2022,
-                1, 1, 1, 1, 1, 1).toString());
-        assertThat(result).extractingJsonPathStringValue("$.end").isEqualTo(LocalDateTime.of(2023,
-                1, 1, 1, 1, 1, 1).toString());
+        assertThat(result).extractingJsonPathStringValue("$.start")
+                .isEqualTo("2022-01-01T01:01:01.000000001");
+        assertThat(result).extractingJsonPathStringValue("$.end")
+                .isEqualTo("2023-01-01T01:01:01.000000001");
         assertThat(result).extractingJsonPathNumberValue("$.itemId").isEqualTo(1);
         assertThat(result).extractingJsonPathNumberValue("$.bookerId").isEqualTo(1);
         assertThat(result).extractingJsonPathStringValue("$.status").isEqualTo(Status.WAITING.toString());
