@@ -11,6 +11,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.dto.ItemRequestWithAnswersDto;
 import ru.practicum.shareit.request.dto.ItemRequestWithoutAnswersDto;
 import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 
 import java.io.IOException;
@@ -60,7 +61,7 @@ public class ItemRequestDtoTest {
         ItemRequestWithAnswersDto itemRequestWithAnswersDto = ItemRequestWithAnswersDto.builder()
                 .id(1L)
                 .description("description")
-                .requestor(user)
+                .requestor(UserMapper.toUserDto(user))
                 .created(LocalDateTime.of(2025, 1, 1, 1, 1, 1, 1))
                 .items(List.of(ItemMapper.toItemDto(item)))
                 .build();
@@ -78,7 +79,7 @@ public class ItemRequestDtoTest {
         ItemRequestWithoutAnswersDto itemRequestWithoutAnswersDto = ItemRequestWithoutAnswersDto.builder()
                 .id(1L)
                 .description("description")
-                .requestor(user)
+                .requestor(UserMapper.toUserDto(user))
                 .created(LocalDateTime.of(2025, 1, 1, 1, 1, 1, 1))
                 .build();
         JsonContent<ItemRequestWithoutAnswersDto> result = jsonItemRequestWithoutAnswersDto

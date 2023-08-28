@@ -18,9 +18,11 @@ import ru.practicum.shareit.item.comment.CommentRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.request.dto.ItemRequestWithAnswersDto;
+import ru.practicum.shareit.request.dto.ItemRequestWithoutAnswersDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.request.service.ItemRequestService;
+import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
@@ -64,6 +66,7 @@ class ItemRequestServiceTest {
     Comment comment;
     Booking booking;
     ItemRequest request;
+    ItemRequestWithoutAnswersDto requestWithoutAnswersDto;
 
     @BeforeEach
     void beforeEach() {
@@ -81,6 +84,12 @@ class ItemRequestServiceTest {
                 .id(1L)
                 .description("description")
                 .requestor(user)
+                .created(LocalDateTime.now())
+                .build();
+        requestWithoutAnswersDto = ItemRequestWithoutAnswersDto.builder()
+                .id(1L)
+                .description("description")
+                .requestor(UserMapper.toUserDto(user))
                 .created(LocalDateTime.now())
                 .build();
         item = Item.builder()
@@ -118,7 +127,7 @@ class ItemRequestServiceTest {
         Mockito
                 .when(requestRepository.save(any()))
                 .thenReturn(request);
-        ItemRequest request1 = requestService.create(request, user.getId());
+        ItemRequest request1 = requestService.create(requestWithoutAnswersDto, user.getId());
 
         assertEquals(request1, request);
 
@@ -215,7 +224,7 @@ class ItemRequestServiceTest {
                 .when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> requestService.create(request, user.getId()));
+        assertThrows(EntityNotFoundException.class, () -> requestService.create(requestWithoutAnswersDto, user.getId()));
 
         verify(userRepository, times(1)).findById(anyLong());
     }
@@ -224,7 +233,7 @@ class ItemRequestServiceTest {
     void validateRequest() {
         request.setDescription("");
 
-        assertThrows(EntityNotFoundException.class, () -> requestService.create(request, user.getId()));
+        assertThrows(EntityNotFoundException.class, () -> requestService.create(requestWithoutAnswersDto, user.getId()));
 
     }
 }
