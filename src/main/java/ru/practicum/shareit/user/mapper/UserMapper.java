@@ -1,9 +1,11 @@
 package ru.practicum.shareit.user.mapper;
 
+import lombok.Generated;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
+@Generated
 @Component
 public class UserMapper {
 

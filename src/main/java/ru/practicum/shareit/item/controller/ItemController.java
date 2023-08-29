@@ -13,6 +13,8 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 /**
@@ -27,9 +29,11 @@ public class ItemController {
 
     //Получение всех вещей по id пользователя
     @GetMapping
-    public List<ItemBookingDto> getAll(@RequestHeader("X-Sharer-User-id") long userId) {
+    public List<ItemBookingDto> getAll(@RequestHeader("X-Sharer-User-id") long userId,
+                                       @PositiveOrZero @RequestParam(defaultValue = "0") int from,
+                                       @Positive @RequestParam(defaultValue = "20") int size) {
         log.info("Получен запрос GET /items");
-        return itemService.readAllByUserId(userId);
+        return itemService.readAllByUserId(userId, from, size);
     }
 
     //Получение вещи по id пользователя
@@ -65,8 +69,10 @@ public class ItemController {
 
     //Поиск вещей
     @GetMapping("/search")
-    private List<ItemDto> searching(@RequestParam String text) {
-        return itemService.findItemsByText(text);
+    private List<ItemDto> searching(@RequestParam String text,
+                                    @PositiveOrZero @RequestParam(defaultValue = "0") int from,
+                                    @Positive @RequestParam(defaultValue = "20") int size) {
+        return itemService.findItemsByText(text, from, size);
     }
 
     //Добавление комментов

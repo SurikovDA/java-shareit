@@ -1,14 +1,16 @@
 package ru.practicum.shareit.item.mapper;
 
+import lombok.Generated;
 import ru.practicum.shareit.booking.dto.BookingItemDto;
 import ru.practicum.shareit.item.comment.CommentDto;
 import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.request.mapper.RequestMapper;
+import ru.practicum.shareit.request.model.ItemRequest;
 
 import java.util.List;
 
+@Generated
 public class ItemMapper {
 
     //Из item в ItemDto
@@ -19,7 +21,7 @@ public class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
-                .request(RequestMapper.toRequestDto(item.getRequest()))
+                .requestId(item.getItemRequest() == null ? null : item.getItemRequest().getId())
                 .build();
     }
 
@@ -31,7 +33,9 @@ public class ItemMapper {
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
                 .available(itemDto.getAvailable())
-                .request(RequestMapper.toRequest(itemDto.getRequest()))
+                .itemRequest(itemDto.getRequestId() == null ? null : ItemRequest.builder()
+                        .id(itemDto.getRequestId())
+                        .build())
                 .build();
     }
 

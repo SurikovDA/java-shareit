@@ -1,9 +1,6 @@
 package ru.practicum.shareit.item.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.user.dto.UserDto;
 
@@ -14,6 +11,7 @@ import javax.validation.constraints.Positive;
 /**
  * TODO Sprint add-controllers.
  */
+@Generated
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,4 +27,5 @@ public class ItemDto {
     private Boolean available;
     private UserDto owner;
     private ItemRequestDto request;
+    private Long requestId;
 }

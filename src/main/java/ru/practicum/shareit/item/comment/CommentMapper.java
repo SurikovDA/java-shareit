@@ -1,8 +1,10 @@
 package ru.practicum.shareit.item.comment;
 
+import lombok.Generated;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.user.model.User;
 
+@Generated
 public class CommentMapper {
     public static Comment toComment(CommentDto commentDto) {
         return Comment
