@@ -12,6 +12,7 @@ import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
@@ -37,14 +38,14 @@ public class ItemController {
 
     //Получение вещи по id пользователя
     @GetMapping("/{id}")
-    public ItemBookingDto get(@RequestHeader("X-Sharer-User-id") Long userId, @PathVariable Long id) {
+    public ItemBookingDto get(@RequestHeader("X-Sharer-User-id") Long userId, @Valid @PathVariable Long id) {
         log.info("Получен запрос GET /items/{}", id);
         return itemService.getItemByUserId(id, userId);
     }
 
     //Создание вещи
     @PostMapping
-    public ItemDto create(@RequestHeader("X-Sharer-User-id") long userId, @RequestBody ItemDto itemDto) {
+    public ItemDto create(@RequestHeader("X-Sharer-User-id") long userId, @Valid @RequestBody ItemDto itemDto) {
         log.info("Получен запрос POST /items");
         Item item = ItemMapper.toItem(itemDto);
         return itemService.create(item, userId);
@@ -52,7 +53,7 @@ public class ItemController {
 
     //Редактирование вещи
     @PatchMapping("/{id}")
-    public ItemDto update(@RequestHeader("X-Sharer-User-id") long userId, @PathVariable Long id,
+    public ItemDto update(@RequestHeader("X-Sharer-User-id") long userId, @Valid @PathVariable Long id,
                           @RequestBody ItemDto itemDto) {
         log.info("Получен запрос PUT /items");
         Item item = ItemMapper.toItem(itemDto);
@@ -61,7 +62,7 @@ public class ItemController {
 
     //Удаление вещи
     @DeleteMapping("/{id}")
-    public void delete(@RequestHeader("X-Sharer-User-id") long userId, @PathVariable Long id) {
+    public void delete(@RequestHeader("X-Sharer-User-id") long userId, @Valid @PathVariable Long id) {
         log.info("Получен запрос DELETE /items");
         itemService.delete(id, userId);
     }
@@ -76,8 +77,8 @@ public class ItemController {
 
     //Добавление комментов
     @PostMapping("/{id}/comment")
-    public CommentDto addComment(@RequestHeader("X-Sharer-User-id") long userId, @PathVariable Long id,
-                                 @RequestBody CommentDto commentDto) {
+    public CommentDto addComment(@RequestHeader("X-Sharer-User-id") long userId, @Valid @PathVariable Long id,
+                                 @Valid @RequestBody CommentDto commentDto) {
         log.info("Получен запрос POST /{}/comment", id);
         commentDto.setItem(itemService.getItemById(id));
         Comment comment = CommentMapper.toComment(commentDto);

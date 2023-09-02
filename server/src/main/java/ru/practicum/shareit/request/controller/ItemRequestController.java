@@ -9,6 +9,7 @@ import ru.practicum.shareit.request.dto.ItemRequestWithoutAnswersDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
@@ -26,7 +27,7 @@ public class ItemRequestController {
 
     @PostMapping
     public ItemRequest create(@RequestHeader("X-Sharer-User-id") long userId,
-                              @RequestBody ItemRequestWithoutAnswersDto itemRequestDto) {
+                              @Valid @RequestBody ItemRequestWithoutAnswersDto itemRequestDto) {
         log.info("Получен запрос POST /requests");
         return itemRequestService.create(itemRequestDto, userId);
     }
