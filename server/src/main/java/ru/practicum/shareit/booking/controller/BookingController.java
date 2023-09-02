@@ -10,7 +10,6 @@ import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.service.BookingService;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
@@ -52,14 +51,14 @@ public class BookingController {
     }
 
     @PostMapping
-    public Booking create(@RequestHeader("X-Sharer-User-id") long userId, @Valid @RequestBody BookingDto bookingDto) {
+    public Booking create(@RequestHeader("X-Sharer-User-id") long userId, @RequestBody BookingDto bookingDto) {
         log.info("Получен запрос POST /items");
         Booking booking = BookingMapper.toBooking(bookingDto);
         return bookingService.create(booking, userId);
     }
 
     @PatchMapping("/{bookingId}")
-    public Booking setStatus(@RequestHeader("X-Sharer-User-id") long userId, @Valid @PathVariable Long bookingId,
+    public Booking setStatus(@RequestHeader("X-Sharer-User-id") long userId, @PathVariable Long bookingId,
                              @RequestParam boolean approved) {
         log.info("Получен запрос PATCH /bookings/{}={}", bookingId, approved);
         return bookingService.setStatus(bookingId, userId, approved);
