@@ -119,7 +119,7 @@ public class BookingServiceImpl implements BookingService {
                     return bookingRepository.findAllByBookerIdAndEndBeforeOrderByStartDesc(renterId, now, pageable)
                             .toList();
                 case CURRENT:
-                    return bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(renterId,
+                    return bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfterOrderById(renterId,
                             now, now, pageable).toList();
                 case WAITING:
                     return bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(renterId, Status.WAITING,
