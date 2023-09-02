@@ -288,6 +288,10 @@ class BookingServiceTest {
                         any(), any()))
                 .thenReturn(new PageImpl<>(List.of()));
         Mockito
+                .when(bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfterOrderById(anyLong(), any(),
+                        any(), any()))
+                .thenReturn(new PageImpl<>(List.of()));
+        Mockito
                 .when(bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(anyLong(), any(), any()))
                 .thenReturn(new PageImpl<>(List.of(booking)));
         List<Booking> bookingsAll = bookingService.findAllByRenterId(user.getId(), State.ALL, 0, 10);
@@ -313,7 +317,7 @@ class BookingServiceTest {
         verify(bookingRepository, times(1)).findAllByBookerIdAndEndBeforeOrderByStartDesc(
                 anyLong(), any(), any());
         verify(bookingRepository, times(1))
-                .findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(anyLong(), any(), any(), any());
+                .findAllByBookerIdAndStartBeforeAndEndAfterOrderById(anyLong(), any(), any(), any());
         verify(bookingRepository, times(1)).findAllByBookerIdAndStatusOrderByStartDesc(anyLong(),
                 any(), any());
     }
