@@ -1,4 +1,5 @@
 package ru.practicum.shareit.user;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -9,10 +10,9 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.client.BaseClient;
 import ru.practicum.shareit.user.dto.UserDto;
 
-import java.util.Map;
-
 @Service
 public class UserClient extends BaseClient {
+
     private static final String API_PREFIX = "/users";
 
     @Autowired
@@ -25,27 +25,23 @@ public class UserClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> getUsers(Integer from, Integer size) {
-        Map<String, Object> parameters = Map.of(
-                "from", from,
-                "size", size
-        );
-        return get("", null, parameters);
-    }
-
-    public ResponseEntity<Object> getUser(long userId) {
-        return get("/" + userId);
-    }
-
     public ResponseEntity<Object> createUser(UserDto userDto) {
         return post("", userDto);
     }
 
-    public ResponseEntity<Object> updateUser(long userId, UserDto userDto) {
+    public ResponseEntity<Object> updateUser(UserDto userDto, Long userId) {
         return patch("/" + userId, userDto);
     }
 
-    public ResponseEntity<Object> deleteUser(long userId) {
+    public ResponseEntity<Object> getUserById(Long userId) {
+        return get("/" + userId);
+    }
+
+    public ResponseEntity<Object> deleteUser(Long userId) {
         return delete("/" + userId);
+    }
+
+    public ResponseEntity<Object> findAllUsers() {
+        return get("");
     }
 }

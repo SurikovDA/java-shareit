@@ -1,53 +1,53 @@
 package ru.practicum.shareit.user;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 
-@Controller
+
+@RestController
 @RequestMapping(path = "/users")
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Slf4j
-@Validated
 public class UserController {
-    private final UserClient userClient;
+    private final UserClient userService;
 
+    //Получение всех пользователей
     @GetMapping
-    public ResponseEntity<Object> getAll(@PositiveOrZero @RequestParam(defaultValue = "0") int from,
-                                         @Positive @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Object> getAll() {
         log.info("Получен запрос GET /users");
-        return userClient.getUsers(from, size);
+        return userService.findAllUsers();
     }
 
+    //Получение пользователя по id
     @GetMapping("/{id}")
-    public ResponseEntity<Object> get(@Valid @PathVariable Long id) {
+    public ResponseEntity<Object> get(@PathVariable Long id) {
         log.info("Получен запрос GET /users/{}", id);
-        return userClient.getUser(id);
+        return userService.getUserById(id);
     }
 
+    //Создание пользователя
     @PostMapping
     public ResponseEntity<Object> create(@Valid @RequestBody UserDto userDto) {
         log.info("Получен запрос POST /users");
-        return userClient.createUser(userDto);
+        return userService.createUser(userDto);
     }
 
+    //Редактирование пользователя
     @PatchMapping("/{id}")
-    public ResponseEntity<Object> update(@Valid @PathVariable Long id, @RequestBody UserDto userDto) {
-        log.info("Получен запрос PUT /users");
-        return userClient.updateUser(id, userDto);
+    public ResponseEntity<Object> update(@PathVariable Long id, @RequestBody UserDto userDto) {
+        log.info("Получен запрос PATCH /users");
+        return userService.updateUser(userDto, id);
     }
 
+    //Удаление пользователя
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> delete(@Valid @PathVariable Long id) {
+    public ResponseEntity<Object> delete(@PathVariable Long id) {
         log.info("Получен запрос DELETE /users");
-        return userClient.deleteUser(id);
+        return userService.deleteUser(id);
     }
 }
