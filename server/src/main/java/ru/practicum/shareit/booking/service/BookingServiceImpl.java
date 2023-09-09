@@ -30,7 +30,6 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking create(Booking booking, Long bookerId) {
-        validate(booking);
         Optional<User> optBooker = userRepository.findById(bookerId);
         if (optBooker.isEmpty()) {
             throw new EntityNotFoundException("Пользователь с указанным bookerId не найден");
@@ -169,17 +168,6 @@ public class BookingServiceImpl implements BookingService {
                     "в списке)", ownerId);
             throw new EntityNotFoundException(String.format("Невозможно найти бронь у пользователя с id = %d, т.к. " +
                     "он отсутствует в списке", ownerId));
-        }
-    }
-
-    private void validate(Booking booking) {
-        if (booking.getEnd().isBefore(booking.getStart())) {
-            log.warn("Нельзя завершить бронь раньше ее регистрации");
-            throw new IllegalArgumentException("Завершение брони раньше ее регистрации");
-        }
-        if (booking.getStart().equals(booking.getEnd())) {
-            log.warn("Время начала бронирования равна времени конца бронирования");
-            throw new IllegalArgumentException("Время начала бронирования равна времени конца бронирования");
         }
     }
 }

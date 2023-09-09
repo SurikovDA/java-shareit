@@ -8,7 +8,6 @@ import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -37,7 +36,7 @@ public class UserController {
 
     //Создание пользователя
     @PostMapping
-    public UserDto create(@Valid @RequestBody UserDto userDto) {
+    public UserDto create(@RequestBody UserDto userDto) {
         log.info("Получен запрос POST /users");
         User user = UserMapper.toUser(userDto);
         return userService.create(user);

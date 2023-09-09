@@ -36,6 +36,14 @@ public class BookingController {
     public ResponseEntity<Object> bookItem(@RequestHeader("X-Sharer-User-Id") long userId,
                                            @RequestBody @Valid BookItemRequestDto requestDto) {
         log.info("Получен запрос POST /items");
+        if (requestDto.getEnd().isBefore(requestDto.getStart())) {
+            log.warn("Нельзя завершить бронь раньше ее регистрации");
+            throw new IllegalArgumentException("Завершение брони раньше ее регистрации");
+        }
+        if (requestDto.getStart().equals(requestDto.getEnd())) {
+            log.warn("Время начала бронирования равна времени конца бронирования");
+            throw new IllegalArgumentException("Время начала бронирования равна времени конца бронирования");
+        }
         return bookingClient.bookItem(userId, requestDto);
     }
 
