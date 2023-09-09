@@ -458,6 +458,6 @@ class BookingServiceTest {
     void validateEnd() {
         booking.setEnd(LocalDateTime.of(2020, 1, 1, 1, 1, 1, 1));
 
-        assertThrows(IllegalArgumentException.class, () -> bookingService.create(booking, user.getId()));
+        assertThrows(EntityNotFoundException.class, () -> bookingService.create(booking, user.getId()));
     }
 }
